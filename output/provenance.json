@@ -1,0 +1,85 @@
+{
+  "project": "SDG11-HND-ROATAN-CROWDING",
+  "script": "scripts/build_hexes.py",
+  "script_version": "0.1.0",
+  "run_utc": "2026-11-27T21:48:44+00:00",
+  "python": "3.12.16",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "config_file": "config/config.yaml",
+  "config_sha256": "2fc0cd1972d4e94ffc8f6f98ff1444452cd258cb6b871e316572c2f1da5b34fd",
+  "inputs": {
+    "outline": {
+      "path": "data/outline/roatan_island_sinit2016.gpkg",
+      "sha256": "c7199162c4b7ffe33b9e1db5f6c8e131328520bf57b0dbc2275068bcbfe1e23b"
+    },
+    "terminals": {
+      "path": "catalogs/cruise_terminals.csv",
+      "sha256": "6293f22267701e68169e43090e5e9ae1f128788597b3e232f7b2661687ce331b"
+    },
+    "destinations": {
+      "path": "catalogs/visitor_destinations.csv",
+      "sha256": "d6126abb339de29e3226cad415255013712c15723ea7d97d194e133111b1bed3"
+    },
+    "months": {
+      "path": "catalogs/months_es.csv",
+      "sha256": "fd668c422d4e773bf60d38e523766f24f8e1e0ee542ffe6b274750077137b0b2"
+    },
+    "cruises": {
+      "path": "data/cruises/cruises.xlsx",
+      "sha256": "1fe7b6e99c0820ec9411b79990e8ead2f14dec636835319cdce2a0e572ef5594"
+    },
+    "population_raster": {
+      "path": "data/population/GHS_POP_E2025_GLOBE_R2023A_4326_3ss_V1_0_R8_C10.tif",
+      "sha256": "8130f0b3cedf2d26a6e55b43557ebe0cd110ad8c4943df7ed3bdb47311b07157"
+    }
+  },
+  "packages": {
+    "geopandas": "1.2.0",
+    "shapely": "2.2.0",
+    "pyproj": "3.8.0",
+    "pyogrio": "0.13.0",
+    "rasterio": "1.5.2",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "pyyaml": "6.0.3"
+  },
+  "hexagons": 708,
+  "metric_crs": "EPSG:32616",
+  "residents_mode": "population_raster",
+  "terminal_params": [
+    {
+      "name": "Isla Tropicale (formerly Mahogany Bay)",
+      "share_near": 1.0,
+      "decay_km": 0.7,
+      "max_km": 3.0
+    },
+    {
+      "name": "Town Center at Coxen Hole",
+      "share_near": 1.0,
+      "decay_km": 1.5,
+      "max_km": 4.0
+    }
+  ],
+  "residents_raster_total": 81488,
+  "residents_total_used": 61032,
+  "cruise_report": {
+    "rows_total": 1830,
+    "rows_dropped_empty": 6,
+    "rows_other_ports": 16,
+    "rows_exact_duplicates_kept": 2,
+    "passengers_by_year": {
+      "2021": 313703,
+      "2022": 942988,
+      "2023": 1391018,
+      "2024": 1802495,
+      "2025": 1979002
+    }
+  },
+  "ship_median_by_year": {
+    "2021": 2012,
+    "2022": 2756,
+    "2023": 3473,
+    "2024": 3738,
+    "2025": 3928
+  }
+}

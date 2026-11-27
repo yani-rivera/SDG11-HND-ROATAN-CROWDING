@@ -65,12 +65,17 @@ details ul { padding-left: 18px; margin: 6px 0; }
   background: #fff; border: 2px solid var(--ink); border-radius: 50%; width: 14px; height: 14px;
 }
 .terminal-label {
-  font-size: 0.72rem; background: var(--paper); padding: 1px 5px; border-radius: 4px;
-  white-space: nowrap; position: absolute; left: 50%; bottom: 18px;
-  transform: translateX(-50%); pointer-events: none;
+  font-size: 0.72rem; background: var(--paper); padding: 2px 6px; border-radius: 4px;
+  white-space: nowrap; position: absolute; left: 50%; transform: translateX(-50%);
+  pointer-events: none; border: 1px solid #c9d3da; z-index: 2;
 }
 .terminal-marker { position: relative; }
-.terminal-marker.below .terminal-label { bottom: auto; top: 18px; }
+.terminal-marker.west .terminal-label { left: auto; right: 50%; transform: none; border-top-right-radius: 0; }
+.terminal-marker.east .terminal-label { left: 50%; transform: none; border-top-left-radius: 0; }
+.leader {                         /* thin line from the terminal out into the sea */
+  position: absolute; left: 50%; top: 12px; width: 1px; transform: translateX(-50%);
+  background: var(--ink); opacity: 0.6; pointer-events: none;
+}
 .maplibregl-popup-content { font-size: 0.85rem; }
 
 /* Phones: panel becomes a bottom sheet so the map stays visible. */
@@ -81,6 +86,8 @@ details ul { padding-left: 18px; margin: 6px 0; }
   }
   h1 { font-size: 1.1rem; }
   .stats dd { font-size: 0.95rem; }
+  /* terminal names wrap so they fit beside the island on narrow screens */
+  .terminal-label { white-space: normal; width: max-content; max-width: 100px; line-height: 1.25; }
   /* finger-sized map controls (zoom, compass) */
   .maplibregl-ctrl-group button { width: 44px; height: 44px; }
 }

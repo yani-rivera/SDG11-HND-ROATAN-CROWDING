@@ -322,13 +322,21 @@
   map.on("load", () => {
     ready = true;
     homeView(false);
-    D.terminals.forEach((t, i) => {
+    // Terminal names sit out in the sea (south of the shore) with a thin leader line, so they
+    // never cover the towers. The westernmost name extends left, the others right, so the
+    // names and lines never cross each other.
+    const LEADER = 40;
+    const westLon = Math.min(...D.terminals.map(t => t.lon));
+    D.terminals.forEach(t => {
       const el = document.createElement("div");
-      el.className = "terminal-marker" + (i % 2 ? " below" : "");
+      el.className = "terminal-marker" + (t.lon === westLon ? " west" : " east");
       el.setAttribute("aria-label", t.name);
+      const line = document.createElement("span");
+      line.className = "leader"; line.style.height = `${LEADER}px`;
       const lab = document.createElement("div");
       lab.className = "terminal-label"; lab.textContent = t.name;
-      el.appendChild(lab);
+      lab.style.top = `${12 + LEADER}px`;
+      el.append(line, lab);
       new maplibregl.Marker({ element: el }).setLngLat([t.lon, t.lat]).addTo(map);
     });
     render(true);
