@@ -1,0 +1,115 @@
+# SDG11-HND-ROATAN-CROWDING — how crowded Roatán feels with 0–3 cruise ships in port.
+# Paths are relative to the project root. Place names live only in catalogs/.
+
+project:
+  id: SDG11-HND-ROATAN-CROWDING
+  title: "An Island That Makes Room"
+  subtitle: "Roatán with no ships, one, two or three cruise ships in port"
+
+outline:
+  # Islas de la Bahía department polygon (OCHA HDX cod-ab-hnd, SINIT 2016-10-05), clipped to Roatán
+  path: data/outline/roatan_island_sinit2016.gpkg
+  layer: roatan_island
+  # Clip box [west, south, east, north] in degrees: keeps the main island chain,
+  # leaves out Guanaja and the far-south cays in the same file.
+  clip_bbox: [-86.62, 16.20, -86.10, 16.46]
+  display_simplify_m: 15    # simplify the coastline drawn on the web page (not the analysis)
+
+hexgrid:
+  cell_size_m: 500          # flat-to-flat width of each hexagon
+  min_land_fraction: 0.15   # drop hexagons that are mostly sea
+  display_scale: 0.9        # draw towers slightly smaller than their cell (visual gap)
+
+residents:
+  total: 61032              # Roatán + José Santos Guardiola, INE 2018 projection
+  source_note: "Residents total: INE projection 2018 for Roatán and José Santos Guardiola (61,032); where they live: GHS-POP 2025 (EU JRC)."
+  # Optional population raster (GHS-POP or WorldPop, any CRS). Leave null to spread
+  # residents by land area only (placeholder; the page will say so).
+  raster: data/population/GHS_POP_E2025_GLOBE_R2023A_4326_3ss_V1_0_R8_C10.tif
+  # true  = the raster decides WHERE people live; the total is rescaled to `total` above (INE)
+  # false = keep the raster's own total (GHS-POP 2025 puts ~76,900 people on the island)
+  scale_to_total: true
+  raster_note: "Residents placed with GHS-POP 2025 (EU JRC, R2023A, 3 arc-seconds) — a model that spreads census counts onto built-up areas; until the 2026 census is published."
+
+cruises:
+  # Tourism institute cruise records (one row = one ship call), captured from its public report
+  path: data/cruises/cruises.xlsx
+  sheet: 0
+  columns: {year: "Año", month: "Mes", port: "Punto de Entrada", passengers: "Personas", ship: "Barco"}
+  source_note: "Cruise calls and passengers per terminal and month, 2021–2025: Instituto Hondureño de Turismo public report (captured)."
+  # Shown visibly on the page, under the legend.
+  scope_note: "Cruise visitors only. Tourists arriving by air or by ferry are not included, so the real crowd is larger than shown."
+
+economy:
+  # Industry-funded passenger survey (self-reported onshore spending). Shown with its reference.
+  spend_per_passenger_usd: 99.20
+  label: "Estimated cruise spending"
+  caveat: "Self-reported in an industry-funded passenger survey; how much stays on the island is not measured. The tourism institute's own estimate uses the same survey, so it is not an independent check."
+  jobs_note: "Same study: 2,133 direct jobs ($18.1 million in wages) in Honduras; 3,386 jobs ($30.6 million) including indirect effects."
+  reference: "Business Research and Economic Advisors (BREA) for the Florida-Caribbean Cruise Association (2024). Economic Contribution of Cruise Tourism to the Destination Economies, Vol. II — Honduras, 2023/2024 cruise year."
+  reference_url: "https://f-cca.com/downloads/2024-Caribbean-Cruse-Analysis-Vol-II.pdf"
+
+ships:
+  default_capacity: auto    # "auto" = median passengers per call in the latest year of the cruise data
+  capacity_min: 1000
+  capacity_max: 7000
+  capacity_step: 500
+  max_ships: 3
+  # ship 1 -> first terminal in the catalog, ship 2 -> second, ship 3 -> first again, ...
+  source_note: "Ship buttons are scenarios; the month menu uses the real monthly totals."
+
+visitors:
+  # ASSUMPTION — shown on the page. How one ship's passengers spread over the island.
+  # Defaults below; per-terminal values in catalogs/cruise_terminals.csv override them.
+  share_near_terminal: 0.6  # the rest goes to visitor destinations (catalog)
+  terminal_decay_km: 1.5    # exponential decay of visitors with distance from the terminal
+  terminal_max_km: 4.0      # no visitors from a terminal beyond this distance
+  destination_decay_km: 0.6
+  destination_max_km: 1.5
+  near_port_km: 2.0         # "near the port" radius used in the panel statistic
+
+catalogs:
+  terminals: catalogs/cruise_terminals.csv
+  months: catalogs/months_es.csv
+  destinations: catalogs/visitor_destinations.csv
+
+outputs:
+  web_data: docs/data/crowd_data.js
+  data_json: output/crowd_data.json      # same data as plain JSON (used by make_posters.py)
+  geojson_dir: output/geojson            # hexes, terminals, Tanaka contours (written by make_posters.py)
+  gpkg: output/roatan_crowding_hexes.gpkg
+  csv: output/roatan_crowding_hexes.csv
+  provenance: output/provenance.json
+  monthly_csv: output/roatan_cruise_calls_by_month.csv
+
+colours:
+  residents: "#2a9d8f"
+  visitors: "#f4845f"
+  sea: "#d8ecf1"
+  land: "#efe9dc"
+  land_outline: "#b9b29f"
+  tanaka_light: "#ffffff"     # contour edges facing the light
+  tanaka_shadow: "#1d2b36"    # contour edges facing away
+  tanaka_low: "#f4f1ea"       # fill of the lowest density band (colours ramp from here)
+
+tanaka:
+  # People-density surface (residents + cruise visitors per km² of land), used by the
+  # "Tanaka" view of the page and by the static posters.
+  grid_cell_m: 200
+  blur_sigma_cells: 3.0       # Gaussian smoothing of the density surface (cells of grid_cell_m)
+  thresholds_per_km2: [50, 150, 300, 500, 750, 1000, 1500, 2000, 3000, 4000, 6000]
+  light_azimuth_deg: 315      # light from the northwest
+  line_width: 1.1
+  share_full_coral: 0.8       # visitor share at which the fill is fully the visitor colour
+  clip_to_land: false         # true = cut the hills at the coastline; false = soft hills that may pass the coast
+
+posters:
+  out_dir: output/posters
+  dpi: 300
+  rotation_deg: -22           # rotate the map so the island lies horizontally (north arrow added)
+  title: "An Island That Makes Room"
+  subtitle: "People per km² on Roatán — residents and cruise visitors, Tanaka contours"
+  panels:
+    - {label: "Just us", ships: 0}
+    - {label: "Three ships in port", ships: 3}
+    - {label: "An average day, December 2025", month: "2025-12"}

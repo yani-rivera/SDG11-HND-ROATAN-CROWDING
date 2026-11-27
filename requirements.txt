@@ -1,0 +1,10 @@
+geopandas>=1.0
+shapely>=2.0
+pyproj
+pyogrio
+rasterio
+numpy
+pandas
+pyyaml
+openpyxl
+matplotlib

@@ -1,0 +1,86 @@
+:root {
+  --res: #2a9d8f;
+  --vis: #f4845f;
+  --ink: #1d2b36;
+  --muted: #5b6b77;
+  --paper: rgba(255, 255, 255, 0.95);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); }
+#map { position: fixed; inset: 0; }
+
+#panel {
+  position: fixed; top: 12px; left: 12px; width: 340px; max-height: calc(100% - 24px);
+  overflow-y: auto; background: var(--paper); border-radius: 12px; padding: 14px 16px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+}
+h1 { font-size: 1.25rem; margin: 0 0 2px; }
+#subtitle { margin: 0 0 10px; color: var(--muted); font-size: 0.85rem; }
+
+.view { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+.view button { min-height: 40px; border: 1px solid #c9d3da; background: #fff; border-radius: 8px;
+  font: inherit; font-size: 0.85rem; cursor: pointer; color: var(--ink); }
+.view button[aria-pressed="true"] { background: #e9eef1; border-color: var(--ink); font-weight: 600; }
+.view button:focus-visible { outline: 3px solid var(--vis); outline-offset: 2px; }
+.ramp { display: block; width: 100%; height: 10px; border-radius: 3px; }
+[hidden] { display: none !important; }   /* "hidden" always wins over display rules */
+.ships { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+.ships button, .reset {
+  min-height: 44px; border: 1px solid #c9d3da; background: #fff; border-radius: 8px;
+  font: inherit; font-size: 0.9rem; cursor: pointer; color: var(--ink);
+}
+.ships button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.ships button:focus-visible, .reset:focus-visible, input:focus-visible { outline: 3px solid var(--vis); outline-offset: 2px; }
+
+.slider { display: block; font-size: 0.85rem; margin-bottom: 10px; }
+.slider input { width: 100%; min-height: 32px; accent-color: var(--vis); }
+
+.month { display: block; font-size: 0.85rem; margin-bottom: 8px; }
+.month select { display: block; width: 100%; min-height: 44px; margin-top: 4px; font: inherit;
+  border: 1px solid #c9d3da; border-radius: 8px; background: #fff; color: var(--ink); padding: 0 8px; }
+.day-note { font-size: 0.82rem; background: #fdf0ea; border-radius: 8px; padding: 6px 8px; margin: 0 0 10px; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 10px; }
+.stats div { background: #f3f6f8; border-radius: 8px; padding: 8px; }
+.stats .wide { grid-column: span 2; }
+.stats dt { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+.stats dd { margin: 2px 0 0; font-size: 1.05rem; font-weight: 600; }
+
+.stats .econ { background: #f1f7ee; }
+.econ-note { margin: 4px 0 0; font-size: 0.75rem; color: var(--muted); }
+.econ-note a, details a { color: #2b5c8a; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.8rem; align-items: center; margin-bottom: 8px; }
+.sw { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 5px; }
+.sw-res { background: var(--res); }
+.sw-vis { background: var(--vis); }
+#scale-note { color: var(--muted); width: 100%; }
+
+.scope { background: #eef4ff; border-left: 4px solid #4a6fa5; padding: 6px 8px; font-size: 0.8rem; margin: 0 0 8px; }
+.warn { background: #fff4e5; border-left: 4px solid #f0a33a; padding: 6px 8px; font-size: 0.8rem; margin: 0 0 8px; }
+details { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+details ul { padding-left: 18px; margin: 6px 0; }
+.reset { width: 100%; }
+
+.terminal-marker {
+  background: #fff; border: 2px solid var(--ink); border-radius: 50%; width: 14px; height: 14px;
+}
+.terminal-label {
+  font-size: 0.72rem; background: var(--paper); padding: 1px 5px; border-radius: 4px;
+  white-space: nowrap; position: absolute; left: 50%; bottom: 18px;
+  transform: translateX(-50%); pointer-events: none;
+}
+.terminal-marker { position: relative; }
+.terminal-marker.below .terminal-label { bottom: auto; top: 18px; }
+.maplibregl-popup-content { font-size: 0.85rem; }
+
+/* Phones: panel becomes a bottom sheet so the map stays visible. */
+@media (max-width: 640px) {
+  #panel {
+    top: auto; bottom: 0; left: 0; right: 0; width: auto; max-height: 48%;
+    border-radius: 14px 14px 0 0; padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
+  }
+  h1 { font-size: 1.1rem; }
+  .stats dd { font-size: 0.95rem; }
+  /* finger-sized map controls (zoom, compass) */
+  .maplibregl-ctrl-group button { width: 44px; height: 44px; }
+}

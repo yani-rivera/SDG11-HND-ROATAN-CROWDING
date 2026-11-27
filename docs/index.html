@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; worker-src blob:; child-src blob:; connect-src 'self' data: blob:; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>An Island That Makes Room — Roatán</title>
+  <link rel="stylesheet" href="vendor/maplibre-gl.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="map" role="region" aria-label="3D hexagon map of Roatán"></div>
+
+  <aside id="panel" aria-live="polite">
+    <header>
+      <h1 id="title">An Island That Makes Room</h1>
+      <p id="subtitle"></p>
+    </header>
+
+    <div class="view" role="group" aria-label="Map style">
+      <button type="button" data-view="towers" aria-pressed="true">Towers</button>
+      <button type="button" data-view="tanaka" aria-pressed="false">Tanaka</button>
+    </div>
+
+    <div class="ships" role="group" aria-label="Cruise ships in port">
+      <button type="button" data-ships="0" aria-pressed="true">Just us</button>
+      <button type="button" data-ships="1" aria-pressed="false">1 ship</button>
+      <button type="button" data-ships="2" aria-pressed="false">2 ships</button>
+      <button type="button" data-ships="3" aria-pressed="false">3 ships</button>
+    </div>
+
+    <label class="slider" for="capacity">
+      Passengers per ship: <strong id="capacity-value"></strong>
+      <input id="capacity" type="range">
+    </label>
+
+    <label class="month" for="month">Or a real average day:
+      <select id="month"><option value="">— choose a month —</option></select>
+    </label>
+    <p id="day-note" class="day-note" hidden></p>
+
+    <dl class="stats">
+      <div><dt>Residents + cruise visitors</dt><dd id="s-total">–</dd></div>
+      <div><dt>Cruise visitors per 100 residents</dt><dd id="s-per100">–</dd></div>
+      <div class="wide"><dt>Near the ports</dt><dd id="s-near">–</dd></div>
+      <div class="wide"><dt>Busiest hexagon</dt><dd id="s-busiest">–</dd></div>
+      <div class="wide econ" id="econ-box" hidden><dt id="econ-label">Estimated cruise spending</dt><dd id="s-spend">–</dd>
+        <p class="econ-note" id="econ-note"></p></div>
+    </dl>
+
+    <div class="legend">
+      <span><i class="sw sw-res"></i>Residents</span>
+      <span><i class="sw sw-vis"></i>Cruise visitors</span>
+      <span class="ramp" id="ramp" hidden></span>
+      <span id="scale-note"></span>
+    </div>
+
+    <p id="scope" class="scope" hidden></p>
+    <p id="placeholder" class="warn" hidden></p>
+
+    <details>
+      <summary>Data and assumptions</summary>
+      <ul id="notes"></ul>
+    </details>
+
+    <button type="button" id="reset" class="reset">Reset view</button>
+  </aside>
+
+  <script src="vendor/maplibre-gl.js"></script>
+  <script src="vendor/d3-array.min.js"></script>
+  <script src="vendor/d3-contour.min.js"></script>
+  <script src="data/crowd_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
